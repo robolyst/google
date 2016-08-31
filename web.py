@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 :Author: `Adrian Letchford <http://www.dradrian.com>`_
-:Organisation: `Warwick Business School <http://www.wbs.ac.uk/>`_, `University of Warwick <http://www.warwick.ac.uk/>`_.
+:Organisation: `Warwick Business School <http://www.wbs.ac.uk/>`_,
+`University of Warwick <http://www.warwick.ac.uk/>`_.
 :Created On: Sat May 31 17:25:53 2014
 """
 
@@ -22,27 +23,34 @@ import requests
 import webbrowser
 
 def my_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(('google.com', 0))
-    return s.getsockname()[0]
+    """Returns the IP of this computer."""
+    soc = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    soc.connect(('google.com', 0))
+    return soc.getsockname()[0]
 
 
 def get_data_from_response(resp):
+    """
+    Get the data from a requests response and decompress it if necessary.
+    """
     if resp.info().get('Content-Encoding') == 'gzip':
-        buf = StringIO( resp.read())
-        f = gzip.GzipFile(fileobj=buf)
-        data = f.read()
+        buf = StringIO(resp.read())
+        virtualfile = gzip.GzipFile(fileobj=buf)
+        data = virtualfile.read()
     else:
         data = resp.read()
 
     return data
 
 def make_url(url, data):
+    """Encode a dictionary onto the end of a URL."""
     encoded_data = urllib.urlencode(data)
     url += '?' + encoded_data
     return url
 
 def encoded_dict(in_dict):
+    """Clean up a dictionary's string encoding."""
+    # pylint: disable=C0103
     out_dict = {}
     for k, v in in_dict.iteritems():
         if isinstance(v, unicode):
@@ -54,6 +62,7 @@ def encoded_dict(in_dict):
     return out_dict
 
 def get_downloads_loc():
+    """Get the system's default download directory."""
 
     system = platform.system()
     release = platform.release()
@@ -78,7 +87,7 @@ def get_downloads_loc():
     return loc
 
 def can_modify_file(filename):
-
+    """Returns true if the file can be modified."""
     if not os.path.isfile(filename):
         return False
     try:
@@ -86,7 +95,7 @@ def can_modify_file(filename):
             return True
         else:
             return False
-    except:
+    except: # pylint: disable=W0702
         return False
 
 
@@ -160,7 +169,8 @@ class WebAccess(requests.Session):
     def fetch_data_wb(self, url, data=None, fname=None, is_unicode=False, timeout=60):
 
         if fname is None:
-            raise NotImplementedError("The capability to read a web page's source is not yet built in.")
+            raise NotImplementedError("The capability to read a web page's \\\
+                source is not yet built in.")
 
         fname = get_downloads_loc() + fname
 
@@ -171,7 +181,7 @@ class WebAccess(requests.Session):
             os.remove(fname)
 
         # Open web page
-        webbrowser.open(GET_url, new=0, autoraise=False);
+        webbrowser.open(GET_url, new=0, autoraise=False)
 
         # Wait for file to download
         seconds_asleep = 0
@@ -193,7 +203,8 @@ class WebAccess(requests.Session):
 
 class GenericLogin(WebAccess):
 
-    def __init__(self, username, password, url_authenticate, url_login, select_form, username_field, password_field, disp=False):
+    def __init__(self, username, password, url_authenticate, url_login,
+                 select_form, username_field, password_field, disp=False):
 
         super(GenericLogin, self).__init__()
 
@@ -230,7 +241,8 @@ class GenericLogin(WebAccess):
             if self.disp:
                 print "Got login page."
 
-            xmlTree = etree.fromstring(data, parser=html.HTMLParser(recover=True, remove_comments=True))
+            parser = html.HTMLParser(recover=True, remove_comments=True)
+            xmlTree = etree.fromstring(data, parser=parser)
 
             for input in find_inputs(xmlTree):
                 name = input.get('name')
@@ -238,8 +250,8 @@ class GenericLogin(WebAccess):
                     name = name.encode('utf8')
                     value = input.get('value', '').encode('utf8')
                     self.login_params[name] = value
-        except:
-            print("Exception while parsing: %s\n" % traceback.format_exc())
+        except: # pylint: disable=W0702
+            print "Exception while parsing: %s\n" % traceback.format_exc()
 
         self.login_params[self.username_field] = username
         self.login_params[self.password_field] = password

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 :Author: `Adrian Letchford <http://www.dradrian.com>`_
-:Organisation: `Warwick Business School <http://www.wbs.ac.uk/>`_, `University of Warwick <http://www.warwick.ac.uk/>`_.
+:Organisation: `Warwick Business School <http://www.wbs.ac.uk/>`_,
+University of Warwick <http://www.warwick.ac.uk/>`_.
 :Created On: Tue May 06 13:31:45 2014
 """
 

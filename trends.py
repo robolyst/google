@@ -1,38 +1,19 @@
 # -*- coding: utf-8 -*-
 """
 :Author: `Adrian Letchford <http://www.dradrian.com>`_
-:Organisation: `Warwick Business School <http://www.wbs.ac.uk/>`_, `University of Warwick <http://www.warwick.ac.uk/>`_.
+:Organisation: `Warwick Business School <http://www.wbs.ac.uk/>`_,
+`University of Warwick <http://www.warwick.ac.uk/>`_.
 :Created On: Tue May 06 13:31:45 2014
 """
 
-import httplib
 import urllib
-import urllib2
-from re import search, DOTALL
-import csv
-import lxml.etree as etree
-import lxml.html as html
-import traceback
-import gzip
-import random
-
-import time
-import sys
 from datetime import datetime
-import numpy
 import json
 import numpy as np
 from copy import copy
-
 from StringIO import StringIO
 import pandas as pd
-
-import hashlib
-
-import pytree.misc
-
-from web import GenericLogin, WebAccess, extract, find_html_elements, search_html
-
+from web import WebAccess, extract, find_html_elements, search_html
 from nltk import clean_html
 
 class Trends(WebAccess):
