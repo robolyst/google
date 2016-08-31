@@ -23,9 +23,6 @@ import numpy as np
 from web import WebAccess, extract, search_html
 from errors import handle_HTTPError
 
-#------------------------------------------------------------------------------
-# Functions
-#------------------------------------------------------------------------------
 
 def pd_to_csv(df, **kwargs):
     """
@@ -36,10 +33,6 @@ def pd_to_csv(df, **kwargs):
     a.pos = 0
     return a.read()
 
-
-#------------------------------------------------------------------------------
-# The main class
-#------------------------------------------------------------------------------
 
 class Correlate(WebAccess):
     """

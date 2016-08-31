@@ -21,10 +21,6 @@ import traceback
 import requests
 import webbrowser
 
-#------------------------------------------------------------------------------
-# Simple functions
-#------------------------------------------------------------------------------
-
 def my_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     s.connect(('google.com', 0))
