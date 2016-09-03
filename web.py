@@ -5,6 +5,7 @@
 `University of Warwick <http://www.warwick.ac.uk/>`_.
 :Created On: Sat May 31 17:25:53 2014
 """
+# pylint: disable=E1101
 
 from re import search, DOTALL
 import gzip
@@ -91,29 +92,32 @@ def can_modify_file(filename):
     if not os.path.isfile(filename):
         return False
     try:
-        if open(filename, 'a', 8):
-            return True
-        else:
-            return False
+        return bool(open(filename, 'a', 8))
     except: # pylint: disable=W0702
         return False
 
 
 def extract(data, reg):
+    """
+    Extract string with a regular expression.
+    """
 
-    r = search(reg, data, DOTALL)
+    result = search(reg, data, DOTALL)
 
-    if r:
-        r = r.group(1)
+    if result:
+        result = result.group(1)
     else:
         raise Exception("Could not extract data.")
 
-    r = r.strip('\n')
+    result = result.strip('\n')
 
-    return r
+    return result
 
 
 def prepare_url(url, data, is_unicode=False):
+    """
+    Joins a dictionary of data onto a url.
+    """
 
     if is_unicode:
         data = encoded_dict(data)
@@ -122,28 +126,33 @@ def prepare_url(url, data, is_unicode=False):
     if data is not None:
         encoded_data = urllib.urlencode(data)
 
-    GET_url = url
+    full_url = url
     if encoded_data is not None:
-        GET_url += '?' + encoded_data
+        full_url += '?' + encoded_data
 
-    return GET_url, encoded_data, data
+    return full_url, encoded_data, data
 
 def find_html_elements(data, reg):
+    """
+    Extracts HTML elements from a blob of HTML.
+    """
 
     find_elements = etree.XPath(reg, regexp=True)
-    xmlTree = etree.fromstring(data, parser=html.HTMLParser(recover=True, remove_comments=True))
+    tree = etree.fromstring(data, parser=html.HTMLParser(recover=True, remove_comments=True))
+    return find_elements(tree)
 
-    return find_elements(xmlTree)
 
-
-def search_html(data, reg):
-    search_fun = etree.XPath(reg, regexp=True)
-    xmlTree = etree.fromstring(data, parser=html.HTMLParser(recover=True, remove_comments=True))
-    return search_fun(xmlTree)
+def search_html(data, reg): # pylint: disable=W0613
+    """Deprecated. Use `find_html_elements`."""
+    raise Exception("This function is deprecated. Use find_html_elements.")
 
 
 
 class WebAccess(requests.Session):
+    """
+    Wrapper around a requests Session that adds throttling and downloading a
+    datafile through a browser.
+    """
 
     def __init__(self):
         super(WebAccess, self).__init__()
@@ -151,6 +160,9 @@ class WebAccess(requests.Session):
         self.throttle = None
 
     def wait_throttle(self):
+        """
+        Sleep for the throttle duration.
+        """
         # Randomized download delay
         if self.throttle is not None:
             r = random.uniform(0.5 * self.throttle, 1.5 * self.throttle)
