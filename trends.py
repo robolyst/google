@@ -13,21 +13,19 @@ import numpy as np
 from copy import copy
 from StringIO import StringIO
 import pandas as pd
-from web import WebAccess, extract, find_html_elements, search_html
+from web import extract, find_html_elements, search_html
 from nltk import clean_html
 
-class Trends(WebAccess):
+class Trends(object):
 
 
-    def __init__(self, google_login = None):
+    def __init__(self, google_login):
 
         super(Trends, self).__init__()
 
-        if google_login is not None:
-
-            self.http_access = google_login
-            self.get = self.http_access.get
-            self.post = self.http_access.post
+        self.http_access = google_login
+        self.get = self.http_access.get
+        self.post = self.http_access.post
 
         #self.url = 'http://www.google.com/trends/trendsReport'
         self.url = 'http://www.google.com/trends/trendsReport'
