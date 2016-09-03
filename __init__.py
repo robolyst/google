@@ -6,6 +6,9 @@
 
 from web import AuthWebSession
 
+# Make the main classes easily accessible
+from google.trends import Trends
+
 class UnverifiedLoginException(Exception):
     """
     Exception for when we could not verify that we've logged into Google."

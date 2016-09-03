@@ -2,7 +2,6 @@
 import pandas as pd
 
 import google
-import google.trends
 
 """
 Test google account
@@ -33,7 +32,7 @@ def test_google_login():
 def test_trends_fetch():
 
     session = get_session()
-    trends = google.trends.Trends(session)
+    trends = google.Trends(session)
     data = trends.fetch_trends(q="Linus")
 
     assert isinstance(data, pd.DataFrame)
