@@ -4,7 +4,7 @@
 :Created On: Tue May 06 13:31:45 2014
 """
 
-from web import GenericLogin
+from web import AuthWebSession
 
 class UnverifiedLoginException(Exception):
     """
@@ -12,7 +12,7 @@ class UnverifiedLoginException(Exception):
     """
     pass
 
-class Session(GenericLogin):
+class Session(AuthWebSession):
     """
     A requests Session that is logged into Google's services.
     """

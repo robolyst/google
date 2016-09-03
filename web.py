@@ -201,12 +201,15 @@ class WebAccess(requests.Session):
         return web_data
 
 
-class GenericLogin(WebAccess):
+class AuthWebSession(WebAccess):
+    """
+    A requests Session that logs in through a web interface.
+    """
 
     def __init__(self, username, password, url_authenticate, url_login,
                  select_form, username_field, password_field, disp=False):
 
-        super(GenericLogin, self).__init__()
+        super(AuthWebSession, self).__init__()
 
         self.login_params = {}
 
