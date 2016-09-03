@@ -147,6 +147,43 @@ def search_html(data, reg): # pylint: disable=W0613
     raise Exception("This function is deprecated. Use find_html_elements.")
 
 
+# pylint: disable=R0913
+def fetch_data_wb(url, data=None, fname=None, is_unicode=False, timeout=60):
+    """
+    Use the web browser to download a data file.
+    """
+
+    if fname is None:
+        raise NotImplementedError("The capability to read a web page's \\\
+            source is not yet built in.")
+
+    fname = get_downloads_loc() + fname
+
+    full_url, _, data = prepare_url(url, data, is_unicode)
+
+    # Make sure the file doesn't exist
+    if os.path.isfile(fname):
+        os.remove(fname)
+
+    # Open web page
+    webbrowser.open(full_url, new=0, autoraise=False)
+
+    # Wait for file to download
+    seconds_asleep = 0
+    while not can_modify_file(fname):
+
+        time.sleep(1)
+        seconds_asleep += 1
+
+        if seconds_asleep >= timeout:
+            raise IOError("File did not download in %d seconds" % timeout)
+
+    # Open file
+    with open(fname, 'r') as dfile:
+        web_data = dfile.read()
+
+    # Return file
+    return web_data
 
 class WebAccess(requests.Session):
     """
@@ -176,45 +213,6 @@ class WebAccess(requests.Session):
     def post(self, *args, **kwargs):
         self.wait_throttle()
         return super(WebAccess, self).post(*args, **kwargs)
-
-    # pylint: disable=R0913
-    def fetch_data_wb(self, url, data=None, fname=None, is_unicode=False,
-                      timeout=60):
-        """
-        Use the web browser to download a data file.
-        """
-
-        if fname is None:
-            raise NotImplementedError("The capability to read a web page's \\\
-                source is not yet built in.")
-
-        fname = get_downloads_loc() + fname
-
-        full_url, encoded_data, data = prepare_url(url, data, is_unicode)
-
-        # Make sure the file doesn't exist
-        if os.path.isfile(fname):
-            os.remove(fname)
-
-        # Open web page
-        webbrowser.open(full_url, new=0, autoraise=False)
-
-        # Wait for file to download
-        seconds_asleep = 0
-        while not can_modify_file(fname):
-
-            time.sleep(1)
-            seconds_asleep += 1
-
-            if seconds_asleep >= timeout:
-                raise IOError("File did not download in %d seconds" % timeout)
-
-        # Open file
-        with open(fname, 'r') as dfile:
-            web_data = dfile.read()
-
-        # Return file
-        return web_data
 
 
 class AuthWebSession(WebAccess):
