@@ -165,9 +165,9 @@ class WebAccess(requests.Session):
         """
         # Randomized download delay
         if self.throttle is not None:
-            r = random.uniform(0.5 * self.throttle, 1.5 * self.throttle)
-            print "Throttle, sleeping for:", r
-            time.sleep(r)
+            rand_time = random.uniform(0.5 * self.throttle, 1.5 * self.throttle)
+            print "Throttle, sleeping for:", rand_time
+            time.sleep(rand_time)
 
     def get(self, *args, **kwargs):
         self.wait_throttle()
@@ -177,8 +177,12 @@ class WebAccess(requests.Session):
         self.wait_throttle()
         return super(WebAccess, self).post(*args, **kwargs)
 
-
-    def fetch_data_wb(self, url, data=None, fname=None, is_unicode=False, timeout=60):
+    # pylint: disable=R0913
+    def fetch_data_wb(self, url, data=None, fname=None, is_unicode=False,
+                      timeout=60):
+        """
+        Use the web browser to download a data file.
+        """
 
         if fname is None:
             raise NotImplementedError("The capability to read a web page's \\\
@@ -186,14 +190,14 @@ class WebAccess(requests.Session):
 
         fname = get_downloads_loc() + fname
 
-        GET_url, encoded_data, data = prepare_url(url, data, is_unicode)
+        full_url, encoded_data, data = prepare_url(url, data, is_unicode)
 
         # Make sure the file doesn't exist
         if os.path.isfile(fname):
             os.remove(fname)
 
         # Open web page
-        webbrowser.open(GET_url, new=0, autoraise=False)
+        webbrowser.open(full_url, new=0, autoraise=False)
 
         # Wait for file to download
         seconds_asleep = 0
@@ -206,8 +210,8 @@ class WebAccess(requests.Session):
                 raise IOError("File did not download in %d seconds" % timeout)
 
         # Open file
-        with open(fname, 'r') as file:
-            web_data = file.read()
+        with open(fname, 'r') as dfile:
+            web_data = dfile.read()
 
         # Return file
         return web_data
