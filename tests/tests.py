@@ -14,4 +14,4 @@ Location: Australia
 """
 
 def test_google_login():
-    account = google.Session("robsmseghthwne@gmail.com", "anog0j4h")
+    session = google.Session("robsmseghthwne@gmail.com", "anog0j4h")
