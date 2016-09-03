@@ -185,37 +185,7 @@ def fetch_data_wb(url, data=None, fname=None, is_unicode=False, timeout=60):
     # Return file
     return web_data
 
-class WebAccess(requests.Session):
-    """
-    Wrapper around a requests Session that adds throttling and downloading a
-    datafile through a browser.
-    """
-
-    def __init__(self):
-        super(WebAccess, self).__init__()
-
-        self.throttle = None
-
-    def wait_throttle(self):
-        """
-        Sleep for the throttle duration.
-        """
-        # Randomized download delay
-        if self.throttle is not None:
-            rand_time = random.uniform(0.5 * self.throttle, 1.5 * self.throttle)
-            print "Throttle, sleeping for:", rand_time
-            time.sleep(rand_time)
-
-    def get(self, *args, **kwargs):
-        self.wait_throttle()
-        return super(WebAccess, self).get(*args, **kwargs)
-
-    def post(self, *args, **kwargs):
-        self.wait_throttle()
-        return super(WebAccess, self).post(*args, **kwargs)
-
-
-class AuthWebSession(WebAccess):
+class AuthWebSession(requests.Session):
     """
     A requests Session that logs in through a web interface.
     """
