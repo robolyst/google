@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 :Author: `Adrian Letchford <http://www.dradrian.com>`_
-:Organisation: `Warwick Business School <http://www.wbs.ac.uk/>`_,
-`University of Warwick <http://www.warwick.ac.uk/>`_.
 :Created On: Sat May 31 17:25:53 2014
 
 Contains general methods and classes for accessing data on the web.
