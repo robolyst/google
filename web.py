@@ -5,23 +5,22 @@
 `University of Warwick <http://www.warwick.ac.uk/>`_.
 :Created On: Sat May 31 17:25:53 2014
 """
-# pylint: disable=E1101
+# pylint: disable=E1101,R0913
 
 from re import search, DOTALL
 import gzip
 from StringIO import StringIO
 import urllib
 import socket
-import random
 import time
 import getpass
 import platform
 import os
+import traceback
+import webbrowser
 import lxml.etree as etree
 import lxml.html as html
-import traceback
 import requests
-import webbrowser
 
 def my_ip():
     """Returns the IP of this computer."""
@@ -142,12 +141,12 @@ def find_html_elements(data, reg):
     return find_elements(tree)
 
 
-def search_html(data, reg): # pylint: disable=W0613
+def search_html(data, reg):
     """Deprecated. Use `find_html_elements`."""
+    # pylint: disable=W0613
     raise Exception("This function is deprecated. Use find_html_elements.")
 
 
-# pylint: disable=R0913
 def fetch_data_wb(url, data=None, fname=None, is_unicode=False, timeout=60):
     """
     Use the web browser to download a data file.
@@ -229,13 +228,13 @@ class AuthWebSession(requests.Session):
                 print "Got login page."
 
             parser = html.HTMLParser(recover=True, remove_comments=True)
-            xmlTree = etree.fromstring(data, parser=parser)
+            element_tree = etree.fromstring(data, parser=parser)
 
-            for input in find_inputs(xmlTree):
-                name = input.get('name')
+            for input_field in find_inputs(element_tree):
+                name = input_field.get('name')
                 if name:
                     name = name.encode('utf8')
-                    value = input.get('value', '').encode('utf8')
+                    value = input_field.get('value', '').encode('utf8')
                     self.login_params[name] = value
         except: # pylint: disable=W0702
             print "Exception while parsing: %s\n" % traceback.format_exc()

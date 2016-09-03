@@ -31,8 +31,6 @@ class Session(AuthWebSession):
                                       password_field="Passwd",
                                       disp=disp)
 
-        self.throttle = 1
-
     def _verify(self, resp):
         """
         Called by the parent class to verify that we have successfully logged
