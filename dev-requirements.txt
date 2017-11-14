@@ -1,0 +1,7 @@
+nose
+
+requests
+lxml
+numpy
+pandas
+nltk
